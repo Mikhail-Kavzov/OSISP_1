@@ -1,7 +1,7 @@
 #pragma once
 #include "Entity.h"
-namespace Drawing {
 
+namespace Drawing {
 	class Ellipse : public Entity {
 		int xCenter, yCenter, a, b;
 	public:

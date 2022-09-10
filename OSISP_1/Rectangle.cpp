@@ -1,12 +1,11 @@
 #include "Rectange.h"
+
 namespace Drawing {
 
 	Rectangle::Rectangle() :Rectangle(100, 100, 200, 200) {
-
 	}
 
 	Rectangle::Rectangle(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {
-
 	}
 	void Rectangle::Draw(HDC hdc) {
 		HPEN hPen = CreatePen(PS_SOLID, 1, Color::Black);

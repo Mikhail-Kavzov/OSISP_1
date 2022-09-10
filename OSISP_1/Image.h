@@ -1,5 +1,6 @@
 #pragma once
 #include "Rectange.h"
+
 namespace Drawing {
 	class Image :public Rectangle {
 		HBITMAP hBitMap;

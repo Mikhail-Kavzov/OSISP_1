@@ -45,18 +45,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UpdateWindow(hWnd);
 
 	MSG msg;
-	while (GetMessage(&msg, NULL, 0, 0))
-	{
+	while (GetMessage(&msg, NULL, 0, 0)){
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-
 	return (int)msg.wParam;
-
 }
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{	
+LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam){	
 
 	RECT rc;
 	PAINTSTRUCT ps;
@@ -113,36 +109,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		case WM_KEYDOWN: {
 			switch (wParam) {
-				case VK_LEFT: //left key
-				{	
+				case VK_LEFT:{	//left key
 					sprite[sPos]->Move(-spriteDelta, 0);
 					if (sprite[sPos]->IsBorder(rc.left, rc.top, rc.right, rc.bottom))
 					sprite[sPos]->Move(jumpLen, 0);	
 					break;
 				}					
-				case VK_RIGHT: //right key
-				{	
+				case VK_RIGHT:{ //right key
 					sprite[sPos]->Move(spriteDelta, 0);
 					if (sprite[sPos]->IsBorder(rc.left, rc.top, rc.right, rc.bottom))
 						sprite[sPos]->Move(-jumpLen, 0);
 					break;
 				}					
-				case VK_UP: //up key
-				{	
+				case VK_UP:{ //up key	
 					sprite[sPos]->Move(0, -spriteDelta);
 					if (sprite[sPos]->IsBorder(rc.left, rc.top, rc.right, rc.bottom))
 						sprite[sPos]->Move(0, jumpLen);
 					break;
 				}
-				case VK_DOWN: //down key
-				{
+				case VK_DOWN:{ //down key
 					sprite[sPos]->Move(0, spriteDelta);
 					if (sprite[sPos]->IsBorder(rc.left, rc.top, rc.right, rc.bottom))
 						sprite[sPos]->Move(0, -jumpLen);
 					break;
 				}
-				case VK_SPACE: //backspace - change object
-				{   ++sPos;
+				case VK_SPACE:{ //backspace - change object
+					++sPos;
 					if (sPos == spriteArrLen)
 						sPos = 0;					
 					break;
@@ -153,6 +145,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		default:
 			return DefWindowProc(hWnd, uMsg, wParam, lParam);
-		}
+	}
 	return 0;
 }

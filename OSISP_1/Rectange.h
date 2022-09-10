@@ -1,7 +1,7 @@
 #pragma once
 #include "Entity.h"
-namespace Drawing {
 
+namespace Drawing {
 	class Rectangle :public Entity {
 	protected:
 		int x, y, width, height;
