@@ -143,6 +143,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 		}
+		case WM_GETMINMAXINFO: { //min size
+			MINMAXINFO* minMaxSize = (MINMAXINFO*)lParam;
+			minMaxSize->ptMinTrackSize = POINT(500, 500);
+		}
 		default:
 			return DefWindowProc(hWnd, uMsg, wParam, lParam);
 	}
