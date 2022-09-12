@@ -23,7 +23,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	wc.hInstance = hInstance;
 	wc.hIcon = LoadIcon(wc.hInstance, IDI_APPLICATION);
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = CreateSolidBrush(MColor::Black);
+	wc.hbrBackground = HBRUSH(COLOR_WINDOW + 1);
 	wc.lpszMenuName = NULL;
 	wc.lpszClassName = L"Sprite";
 	wc.hIconSm = LoadIcon(wc.hInstance, IDI_APPLICATION);
