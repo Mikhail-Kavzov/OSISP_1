@@ -4,6 +4,7 @@
 #include "Rectange.h"
 #include "Image.h"
 
+using namespace MColor;
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 auto const CLASS_NAME = L"Sprite"; //window class name
@@ -22,7 +23,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	wc.hInstance = hInstance;
 	wc.hIcon = LoadIcon(wc.hInstance, IDI_APPLICATION);
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	wc.hbrBackground = CreateSolidBrush(MColor::Black);
 	wc.lpszMenuName = NULL;
 	wc.lpszClassName = L"Sprite";
 	wc.hIconSm = LoadIcon(wc.hInstance, IDI_APPLICATION);
@@ -74,7 +75,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 			break;
 		case WM_PAINT: {
 			hdc = BeginPaint(hWnd, &ps);
-			sprite[sPos]->Draw(hdc);
+			auto hdcMem = CreateCompatibleDC(hdc);
+			auto hbmMem = CreateCompatibleBitmap(hdc,
+				rc.right - rc.left,
+				rc.bottom - rc.top);
+			auto hbmOld = SelectObject(hdcMem, hbmMem);
+			auto hbrBkGnd = CreateSolidBrush(GetSysColor(COLOR_WINDOW));
+			FillRect(hdcMem, &rc, hbrBkGnd);
+			DeleteObject(hbrBkGnd);
+			sprite[sPos]->Draw(hdcMem);
+			BitBlt(hdc,
+				rc.left, rc.top,
+				rc.right - rc.left, rc.bottom - rc.top,
+				hdcMem,
+				0, 0,
+				SRCCOPY);
+			SelectObject(hdcMem, hbmOld);
+			DeleteObject(hbmMem);
+			DeleteDC(hdcMem);
+			
 			EndPaint(hWnd, &ps);
 			break;
 		}
@@ -146,7 +165,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 		case WM_GETMINMAXINFO: { //min size
 			MINMAXINFO* minMaxSize = (MINMAXINFO*)lParam;
 			minMaxSize->ptMinTrackSize = POINT(500, 500);
+			break;
 		}
+		case WM_ERASEBKGND: //double buffered
+			break;
 		default:
 			return DefWindowProc(hWnd, uMsg, wParam, lParam);
 	}
