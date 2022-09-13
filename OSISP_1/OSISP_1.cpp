@@ -5,7 +5,6 @@
 #include "Rectange.h"
 #include "Image.h"
 #pragma comment(lib, "gdiplus.lib")
-
 using namespace Gdiplus; 
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -14,7 +13,7 @@ auto const CLASS_NAME = L"Sprite"; //window class name
 const int spriteDelta = 5; // delta for sprite movement
 const int spriteArrLen = 3; //array length of entities
 const int jumpLen = 20; //rebound from a border
-
+const int IDT_TIMER = 1;
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 
 	WNDCLASSEX wc;
@@ -65,6 +64,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 	static int sPos = 0;
 	static GdiplusStartupInput gdiplusStartupInput;
 	static ULONG_PTR gdiplusToken;
+	static int offsetX = spriteDelta, offsetY = spriteDelta;
+	static int index = 0;
+	
 	GetClientRect(hWnd, &rc);
 	switch (uMsg) {
 		case WM_CREATE: {
@@ -108,6 +110,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 			break;
 		}
 		case WM_MOUSEWHEEL: {
+			KillTimer(hWnd, IDT_TIMER);
 			int offset = GET_WHEEL_DELTA_WPARAM(wParam);
 			if (LOWORD(wParam) == MK_SHIFT) {
 				if (offset > 0) { //left
@@ -137,6 +140,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 			break;
 		}
 		case WM_KEYDOWN: {
+			KillTimer(hWnd, IDT_TIMER);		
 			switch (wParam) {
 				case VK_LEFT:{	//left key
 					sprite[sPos]->Move(-spriteDelta, 0);
@@ -163,9 +167,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 					break;
 				}
 				case VK_SPACE:{ //backspace - change object
-					++sPos;
-					if (sPos == spriteArrLen)
-						sPos = 0;					
+					sPos = (sPos + 1) % spriteArrLen;
+					break;
+				}
+				case VK_TAB: {
+						index = 0;
+						offsetX = spriteDelta;
+						offsetY = spriteDelta;
+						SetTimer(hWnd, IDT_TIMER, 20, (TIMERPROC)NULL);
 					break;
 				}
 			}
@@ -174,11 +183,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 		}
 		case WM_GETMINMAXINFO: { //min size
 			MINMAXINFO* minMaxSize = (MINMAXINFO*)lParam;
-			minMaxSize->ptMinTrackSize = POINT(500, 500);
+			minMaxSize->ptMinTrackSize = POINT(700, 500);
 			break;
 		}
 		case WM_ERASEBKGND: //double buffered
 			break;
+		case WM_TIMER: {
+			switch (wParam) {
+				case IDT_TIMER: {
+					const int offLen = 2;
+					int offsetArr[] = { spriteDelta,-spriteDelta };
+					sprite[sPos]->Move(offsetX, offsetY);
+					if (sprite[sPos]->IsBorder(rc.left, rc.top, rc.right, rc.bottom)) {
+						offsetX = offsetArr[(index >> 1) % offLen];
+						offsetY = offsetArr[((index + 1) >> 1) % offLen];
+						++index;
+					}
+					InvalidateRect(hWnd, NULL, TRUE);
+					break;
+				}
+			}
+		}
 		default:
 			return DefWindowProc(hWnd, uMsg, wParam, lParam);
 	}

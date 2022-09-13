@@ -11,7 +11,7 @@ namespace Drawing {
 		Graphics graphics(hdc);
 		Pen pen(Color::Black);
 		SolidBrush brush(Color::Red);
-		RectF ellipseRect(xCenter - a, yCenter - b, xCenter + a, yCenter + b);
+		RectF ellipseRect(xCenter - a, yCenter - b, a<<1,b<<1);
 		graphics.FillEllipse(&brush, ellipseRect);
 		graphics.DrawEllipse(&pen, ellipseRect);
 	}
