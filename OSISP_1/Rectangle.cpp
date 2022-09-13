@@ -8,13 +8,12 @@ namespace Drawing {
 	Rectangle::Rectangle(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {
 	}
 	void Rectangle::Draw(HDC hdc) {
-		HPEN hPen = CreatePen(PS_SOLID, 1, Color::Black);
-		HBRUSH hBrush = CreateSolidBrush(Color::Blue);
-		SelectObject(hdc, hPen);
-		SelectObject(hdc, hBrush);
-		::Rectangle(hdc, x, y, x + width, y + height);
-		DeleteObject(hPen);
-		DeleteObject(hBrush);
+		Graphics graphics(hdc);
+		Pen pen(Color::Black);
+		SolidBrush brush(Color::Blue);
+		Rect rect(x, y, width, height);
+		graphics.FillRectangle(&brush, rect);
+		graphics.DrawRectangle(&pen, rect);
 	}
 	void Rectangle::Move(int dx, int dy) {
 		x += dx;

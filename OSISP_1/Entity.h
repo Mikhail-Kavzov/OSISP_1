@@ -1,9 +1,9 @@
 #pragma once
 #include <Windows.h>
-#include "Colors.h"
+#include <gdiplus.h>
 
 namespace Drawing{
-	using namespace MColor;
+	using namespace Gdiplus;
 
 	class Entity {
 	public:

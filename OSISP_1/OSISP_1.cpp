@@ -1,10 +1,13 @@
 #pragma once
 #include <Windows.h>
+#include <gdiplus.h>
 #include "Ellipse.h"
 #include "Rectange.h"
 #include "Image.h"
+#pragma comment(lib, "gdiplus.lib")
 
-using namespace MColor;
+using namespace Gdiplus; 
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 auto const CLASS_NAME = L"Sprite"; //window class name
@@ -60,19 +63,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 	HDC hdc;
 	static Drawing::Entity** sprite;
 	static int sPos = 0;
+	static GdiplusStartupInput gdiplusStartupInput;
+	static ULONG_PTR gdiplusToken;
 	GetClientRect(hWnd, &rc);
 	switch (uMsg) {
 		case WM_CREATE: {
+			
+			// Initialize GDI+.
+			GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 			sprite= new Drawing::Entity*[spriteArrLen] {
 				new Drawing::Ellipse(150, 100, 100, 50),
 				new Drawing::Rectangle(50, 50, 200, 100),
-				new Drawing::Image(50, 50, L"../i4.bmp")
+				new Drawing::Image(50, 50, L"../pig.png")
 			};
 			break;
 		}
-		case WM_DESTROY:
+		case WM_DESTROY:{
+			GdiplusShutdown(gdiplusToken);
 			PostQuitMessage(0);
 			break;
+		}
 		case WM_PAINT: {
 			hdc = BeginPaint(hWnd, &ps);
 			auto hdcMem = CreateCompatibleDC(hdc);

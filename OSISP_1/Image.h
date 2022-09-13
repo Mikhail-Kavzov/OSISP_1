@@ -3,12 +3,12 @@
 
 namespace Drawing {
 	class Image :public Rectangle {
-		HBITMAP hBitMap;
+		Gdiplus::Image* img;
 	public:
 		Image(int x, int y,const wchar_t* path);
 		void Draw(HDC hdc) override;
 		~Image() {
-			delete hBitMap;
+			delete img;
 		}
 	};
 }

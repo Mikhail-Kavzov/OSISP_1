@@ -1,7 +1,6 @@
 #include "Ellipse.h"
 
 namespace Drawing {
-
 	Ellipse::Ellipse() :Ellipse(100, 100, 70, 30) {
 	}
 
@@ -9,13 +8,12 @@ namespace Drawing {
 	}
 
 	void Ellipse::Draw(HDC hdc) {
-		HPEN hPen = CreatePen(PS_SOLID, 1, Color::Black);
-		HBRUSH hBrush = CreateSolidBrush(Color::Red);
-		SelectObject(hdc, hPen);
-		SelectObject(hdc, hBrush);
-	    ::Ellipse(hdc, xCenter - a, yCenter - b, xCenter + a, yCenter + b);
-		DeleteObject(hPen);
-		DeleteObject(hBrush);
+		Graphics graphics(hdc);
+		Pen pen(Color::Black);
+		SolidBrush brush(Color::Red);
+		RectF ellipseRect(xCenter - a, yCenter - b, xCenter + a, yCenter + b);
+		graphics.FillEllipse(&brush, ellipseRect);
+		graphics.DrawEllipse(&pen, ellipseRect);
 	}
 
 	void Ellipse::Move(int dx, int dy) {
